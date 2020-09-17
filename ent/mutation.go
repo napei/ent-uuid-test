@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"sync"
 	"test/ent/testmodel"
-	"time"
 
 	"github.com/facebook/ent"
 	"github.com/google/uuid"
@@ -32,8 +31,6 @@ type TestModelMutation struct {
 	op            Op
 	typ           string
 	id            *uuid.UUID
-	create_time   *time.Time
-	update_time   *time.Time
 	test          *string
 	clearedFields map[string]struct{}
 	done          bool
@@ -125,80 +122,6 @@ func (m *TestModelMutation) ID() (id uuid.UUID, exists bool) {
 	return *m.id, true
 }
 
-// SetCreateTime sets the create_time field.
-func (m *TestModelMutation) SetCreateTime(t time.Time) {
-	m.create_time = &t
-}
-
-// CreateTime returns the create_time value in the mutation.
-func (m *TestModelMutation) CreateTime() (r time.Time, exists bool) {
-	v := m.create_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreateTime returns the old create_time value of the TestModel.
-// If the TestModel object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *TestModelMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldCreateTime is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldCreateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreateTime: %w", err)
-	}
-	return oldValue.CreateTime, nil
-}
-
-// ResetCreateTime reset all changes of the "create_time" field.
-func (m *TestModelMutation) ResetCreateTime() {
-	m.create_time = nil
-}
-
-// SetUpdateTime sets the update_time field.
-func (m *TestModelMutation) SetUpdateTime(t time.Time) {
-	m.update_time = &t
-}
-
-// UpdateTime returns the update_time value in the mutation.
-func (m *TestModelMutation) UpdateTime() (r time.Time, exists bool) {
-	v := m.update_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdateTime returns the old update_time value of the TestModel.
-// If the TestModel object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *TestModelMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldUpdateTime is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldUpdateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdateTime: %w", err)
-	}
-	return oldValue.UpdateTime, nil
-}
-
-// ResetUpdateTime reset all changes of the "update_time" field.
-func (m *TestModelMutation) ResetUpdateTime() {
-	m.update_time = nil
-}
-
 // SetTest sets the test field.
 func (m *TestModelMutation) SetTest(s string) {
 	m.test = &s
@@ -250,13 +173,7 @@ func (m *TestModelMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *TestModelMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.create_time != nil {
-		fields = append(fields, testmodel.FieldCreateTime)
-	}
-	if m.update_time != nil {
-		fields = append(fields, testmodel.FieldUpdateTime)
-	}
+	fields := make([]string, 0, 1)
 	if m.test != nil {
 		fields = append(fields, testmodel.FieldTest)
 	}
@@ -268,10 +185,6 @@ func (m *TestModelMutation) Fields() []string {
 // not set, or was not define in the schema.
 func (m *TestModelMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case testmodel.FieldCreateTime:
-		return m.CreateTime()
-	case testmodel.FieldUpdateTime:
-		return m.UpdateTime()
 	case testmodel.FieldTest:
 		return m.Test()
 	}
@@ -283,10 +196,6 @@ func (m *TestModelMutation) Field(name string) (ent.Value, bool) {
 // or the query to the database was failed.
 func (m *TestModelMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case testmodel.FieldCreateTime:
-		return m.OldCreateTime(ctx)
-	case testmodel.FieldUpdateTime:
-		return m.OldUpdateTime(ctx)
 	case testmodel.FieldTest:
 		return m.OldTest(ctx)
 	}
@@ -298,20 +207,6 @@ func (m *TestModelMutation) OldField(ctx context.Context, name string) (ent.Valu
 // type mismatch the field type.
 func (m *TestModelMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case testmodel.FieldCreateTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreateTime(v)
-		return nil
-	case testmodel.FieldUpdateTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdateTime(v)
-		return nil
 	case testmodel.FieldTest:
 		v, ok := value.(string)
 		if !ok {
@@ -369,12 +264,6 @@ func (m *TestModelMutation) ClearField(name string) error {
 // defined in the schema.
 func (m *TestModelMutation) ResetField(name string) error {
 	switch name {
-	case testmodel.FieldCreateTime:
-		m.ResetCreateTime()
-		return nil
-	case testmodel.FieldUpdateTime:
-		m.ResetUpdateTime()
-		return nil
 	case testmodel.FieldTest:
 		m.ResetTest()
 		return nil

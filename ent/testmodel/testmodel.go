@@ -3,8 +3,6 @@
 package testmodel
 
 import (
-	"time"
-
 	"github.com/facebook/ent"
 	"github.com/google/uuid"
 )
@@ -14,10 +12,6 @@ const (
 	Label = "test_model"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldCreateTime holds the string denoting the create_time field in the database.
-	FieldCreateTime = "create_time"
-	// FieldUpdateTime holds the string denoting the update_time field in the database.
-	FieldUpdateTime = "update_time"
 	// FieldTest holds the string denoting the test field in the database.
 	FieldTest = "test"
 
@@ -28,8 +22,6 @@ const (
 // Columns holds all SQL columns for testmodel fields.
 var Columns = []string{
 	FieldID,
-	FieldCreateTime,
-	FieldUpdateTime,
 	FieldTest,
 }
 
@@ -41,12 +33,6 @@ var Columns = []string{
 //
 var (
 	Hooks [1]ent.Hook
-	// DefaultCreateTime holds the default value on creation for the create_time field.
-	DefaultCreateTime func() time.Time
-	// DefaultUpdateTime holds the default value on creation for the update_time field.
-	DefaultUpdateTime func() time.Time
-	// UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	UpdateDefaultUpdateTime func() time.Time
 	// DefaultID holds the default value on creation for the id field.
 	DefaultID func() uuid.UUID
 )

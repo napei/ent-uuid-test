@@ -40,10 +40,6 @@ func (tmu *TestModelUpdate) Mutation() *TestModelMutation {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (tmu *TestModelUpdate) Save(ctx context.Context) (int, error) {
-	if _, ok := tmu.mutation.UpdateTime(); !ok {
-		v := testmodel.UpdateDefaultUpdateTime()
-		tmu.mutation.SetUpdateTime(v)
-	}
 	var (
 		err      error
 		affected int
@@ -111,13 +107,6 @@ func (tmu *TestModelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := tmu.mutation.UpdateTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: testmodel.FieldUpdateTime,
-		})
-	}
 	if value, ok := tmu.mutation.Test(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -156,10 +145,6 @@ func (tmuo *TestModelUpdateOne) Mutation() *TestModelMutation {
 
 // Save executes the query and returns the updated entity.
 func (tmuo *TestModelUpdateOne) Save(ctx context.Context) (*TestModel, error) {
-	if _, ok := tmuo.mutation.UpdateTime(); !ok {
-		v := testmodel.UpdateDefaultUpdateTime()
-		tmuo.mutation.SetUpdateTime(v)
-	}
 	var (
 		err  error
 		node *TestModel
@@ -225,13 +210,6 @@ func (tmuo *TestModelUpdateOne) sqlSave(ctx context.Context) (tm *TestModel, err
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing TestModel.ID for update")}
 	}
 	_spec.Node.ID.Value = id
-	if value, ok := tmuo.mutation.UpdateTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: testmodel.FieldUpdateTime,
-		})
-	}
 	if value, ok := tmuo.mutation.Test(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,

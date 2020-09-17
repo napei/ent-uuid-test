@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 	"test/ent/testmodel"
-	"time"
 
 	"github.com/facebook/ent/dialect/sql"
 	"github.com/google/uuid"
@@ -17,10 +16,6 @@ type TestModel struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
-	// CreateTime holds the value of the "create_time" field.
-	CreateTime time.Time `json:"create_time,omitempty"`
-	// UpdateTime holds the value of the "update_time" field.
-	UpdateTime time.Time `json:"update_time,omitempty"`
 	// Test holds the value of the "test" field.
 	Test string `json:"test,omitempty"`
 }
@@ -29,8 +24,6 @@ type TestModel struct {
 func (*TestModel) scanValues() []interface{} {
 	return []interface{}{
 		&uuid.UUID{},      // id
-		&sql.NullTime{},   // create_time
-		&sql.NullTime{},   // update_time
 		&sql.NullString{}, // test
 	}
 }
@@ -47,18 +40,8 @@ func (tm *TestModel) assignValues(values ...interface{}) error {
 		tm.ID = *value
 	}
 	values = values[1:]
-	if value, ok := values[0].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field create_time", values[0])
-	} else if value.Valid {
-		tm.CreateTime = value.Time
-	}
-	if value, ok := values[1].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field update_time", values[1])
-	} else if value.Valid {
-		tm.UpdateTime = value.Time
-	}
-	if value, ok := values[2].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field test", values[2])
+	if value, ok := values[0].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field test", values[0])
 	} else if value.Valid {
 		tm.Test = value.String
 	}
@@ -88,10 +71,6 @@ func (tm *TestModel) String() string {
 	var builder strings.Builder
 	builder.WriteString("TestModel(")
 	builder.WriteString(fmt.Sprintf("id=%v", tm.ID))
-	builder.WriteString(", create_time=")
-	builder.WriteString(tm.CreateTime.Format(time.ANSIC))
-	builder.WriteString(", update_time=")
-	builder.WriteString(tm.UpdateTime.Format(time.ANSIC))
 	builder.WriteString(", test=")
 	builder.WriteString(tm.Test)
 	builder.WriteByte(')')

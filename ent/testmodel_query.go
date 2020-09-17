@@ -238,12 +238,12 @@ func (tmq *TestModelQuery) Clone() *TestModelQuery {
 // Example:
 //
 //	var v []struct {
-//		CreateTime time.Time `json:"create_time,omitempty"`
+//		Test string `json:"test,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.TestModel.Query().
-//		GroupBy(testmodel.FieldCreateTime).
+//		GroupBy(testmodel.FieldTest).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -264,11 +264,11 @@ func (tmq *TestModelQuery) GroupBy(field string, fields ...string) *TestModelGro
 // Example:
 //
 //	var v []struct {
-//		CreateTime time.Time `json:"create_time,omitempty"`
+//		Test string `json:"test,omitempty"`
 //	}
 //
 //	client.TestModel.Query().
-//		Select(testmodel.FieldCreateTime).
+//		Select(testmodel.FieldTest).
 //		Scan(ctx, &v)
 //
 func (tmq *TestModelQuery) Select(field string, fields ...string) *TestModelSelect {

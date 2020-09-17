@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"test/ent/testmodel"
-	"time"
 
 	"github.com/facebook/ent/dialect/sql/sqlgraph"
 	"github.com/facebook/ent/schema/field"
@@ -19,34 +18,6 @@ type TestModelCreate struct {
 	config
 	mutation *TestModelMutation
 	hooks    []Hook
-}
-
-// SetCreateTime sets the create_time field.
-func (tmc *TestModelCreate) SetCreateTime(t time.Time) *TestModelCreate {
-	tmc.mutation.SetCreateTime(t)
-	return tmc
-}
-
-// SetNillableCreateTime sets the create_time field if the given value is not nil.
-func (tmc *TestModelCreate) SetNillableCreateTime(t *time.Time) *TestModelCreate {
-	if t != nil {
-		tmc.SetCreateTime(*t)
-	}
-	return tmc
-}
-
-// SetUpdateTime sets the update_time field.
-func (tmc *TestModelCreate) SetUpdateTime(t time.Time) *TestModelCreate {
-	tmc.mutation.SetUpdateTime(t)
-	return tmc
-}
-
-// SetNillableUpdateTime sets the update_time field if the given value is not nil.
-func (tmc *TestModelCreate) SetNillableUpdateTime(t *time.Time) *TestModelCreate {
-	if t != nil {
-		tmc.SetUpdateTime(*t)
-	}
-	return tmc
 }
 
 // SetTest sets the test field.
@@ -108,14 +79,6 @@ func (tmc *TestModelCreate) SaveX(ctx context.Context) *TestModel {
 }
 
 func (tmc *TestModelCreate) preSave() error {
-	if _, ok := tmc.mutation.CreateTime(); !ok {
-		v := testmodel.DefaultCreateTime()
-		tmc.mutation.SetCreateTime(v)
-	}
-	if _, ok := tmc.mutation.UpdateTime(); !ok {
-		v := testmodel.DefaultUpdateTime()
-		tmc.mutation.SetUpdateTime(v)
-	}
 	if _, ok := tmc.mutation.Test(); !ok {
 		return &ValidationError{Name: "test", err: errors.New("ent: missing required field \"test\"")}
 	}
@@ -151,22 +114,6 @@ func (tmc *TestModelCreate) createSpec() (*TestModel, *sqlgraph.CreateSpec) {
 	if id, ok := tmc.mutation.ID(); ok {
 		tm.ID = id
 		_spec.ID.Value = id
-	}
-	if value, ok := tmc.mutation.CreateTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: testmodel.FieldCreateTime,
-		})
-		tm.CreateTime = value
-	}
-	if value, ok := tmc.mutation.UpdateTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: testmodel.FieldUpdateTime,
-		})
-		tm.UpdateTime = value
 	}
 	if value, ok := tmc.mutation.Test(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

@@ -6,7 +6,7 @@ import (
 
 	"github.com/facebook/ent"
 	"github.com/facebook/ent/schema/field"
-	"github.com/facebook/ent/schema/mixin"
+	"github.com/google/uuid"
 
 	gen "test/ent"
 )
@@ -16,17 +16,18 @@ type TestModel struct {
 	ent.Schema
 }
 
-// Mixin defines the mixins used for this entity
-func (TestModel) Mixin() []ent.Mixin {
-	return []ent.Mixin{
-		BaseMixin{},
-		mixin.Time{},
-	}
-}
+// // Mixin defines the mixins used for this entity
+// func (TestModel) Mixin() []ent.Mixin {
+// 	return []ent.Mixin{
+// 		BaseMixin{},
+// 		mixin.Time{},
+// 	}
+// }
 
 // Fields of the TestModel.
 func (TestModel) Fields() []ent.Field {
 	return []ent.Field{
+		field.UUID("id", uuid.UUID{}).Default(uuid.New),
 		field.String("test"),
 	}
 }
